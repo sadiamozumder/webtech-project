@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Interactive Portfolio — Lab Task 09</title>
+<style>
+    :root{
+        --bg: #ffffff;
+        --card: #f7f7fb;
+        --text: #222;
+        --muted: #555;
+        --primary: #2563eb;
+        --accent: #06b6d4;
+        --danger: #dc2626;
+    }
+
+    body.dark {
+        --bg: #0b1220;
+        --card: #0f1724;
+        --text: #e6eef8;
+        --muted: #a8b3c7;
+        --primary: #60a5fa;
+        --accent: #34d399;
+        --danger: #f87171;
+    }
+
+    *{box-sizing:border-box}
+    body{
+        margin:0;
+        font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+        background:linear-gradient(180deg,var(--bg), #f0f4ff10);
+        color:var(--text);
+        -webkit-font-smoothing:antialiased;
+        -moz-osx-font-smoothing:grayscale;
+    }
+
+    .app {
+        max-width:1100px;
+        margin:30px auto;
+        padding:24px;
+    }
+
+    header{
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap:16px;
+        margin-bottom:20px;
+    }
+
+    .brand {
+        display:flex;
+        gap:12px;
+        align-items:center;
+    }
+    .logo {
+        width:52px;
+        height:52px;
+        border-radius:10px;
+        background:linear-gradient(135deg,var(--primary),var(--accent));
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        color:white;
+        font-weight:700;
+        font-size:20px;
+        box-shadow: 0 6px 18px rgba(2,6,23,0.12);
+    }
+    h1 { margin:0; font-size:18px; }
+    p.lead { margin:0; color:var(--muted); font-size:13px; }
+
+    .controls {
+        display:flex;
+        gap:10px;
+        align-items:center;
+    }
+    .btn {
+        background:var(--primary);
+        color:white;
+        border:none;
+        padding:8px 12px;
+        border-radius:8px;
+        cursor:pointer;
+        font-weight:600;
+        transition:transform .08s ease, opacity .12s;
+    }
+    .btn:active{ transform:translateY(1px) }
+    .btn.secondary{
+        background:transparent;
+        color:var(--primary);
+        border:1px solid rgba(100,116,255,0.14);
+    }
+
+    nav{
+        margin:18px 0;
+        display:flex;
+        gap:8px;
+        flex-wrap:wrap;
+    }
+    nav a{
+        padding:8px 12px;
+        border-radius:8px;
+        text-decoration:none;
+        color:var(--muted);
+        cursor:pointer;
+        border:1px solid transparent;
+    }
+    nav a.active{
+        color:var(--text);
+        background:var(--card);
+        border-color: rgba(0,0,0,0.04);
+        box-shadow: 0 6px 14px rgba(2,6,23,0.06);
+    }
+
+    .panel {
+        display:flex;
+        gap:20px;
+        align-items:flex-start;
+        flex-wrap:wrap;
+    }
+
+    .left {
+        flex:1 1 280px;
+        min-width:260px;
+    }
+    .right {
+        flex:2 1 600px;
+        min-width:300px;
+    }
+
+    .card {
+        background:var(--card);
+        padding:18px;
+        border-radius:12px;
+        box-shadow: 0 6px 18px rgba(2,6,23,0.06);
+    }
+
+    .greeting {
+        font-size:22px;
+        margin:0 0 6px 0;
+    }
+    .clock {
+        font-family: "Courier New", monospace;
+        font-size:20px;
+        color:var(--muted);
+    }
+
+    section {
+        margin-top:16px;
+    }
+    .section-content { display:block; }
+
+    /* Projects grid */
+    .projects {
+        display:grid;
+        grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+        gap:12px;
+    }
+    .project {
+        padding:12px;
+        border-radius:10px;
+        background:linear-gradient(180deg, rgba(255,255,255,0.03), transparent);
+        border:1px solid rgba(0,0,0,0.03);
+    }
+    .project h3{ margin:0 0 8px 0; font-size:16px }
+    .project p{ margin:0; color:var(--muted); font-size:13px }
+
+    /* Contact form */
+    form .row{ display:flex; gap:10px; margin-bottom:10px; flex-wrap:wrap;}
+    input, textarea {
+        width:100%;
+        padding:10px 12px;
+        border-radius:8px;
+        border:1px solid rgba(0,0,0,0.08);
+        background:white;
+        color:var(--text);
+        font-size:14px;
+    }
+    textarea{ min-height:110px; resize:vertical }
+    .field-error { color:var(--danger); font-size:13px; margin-top:6px; display:none; }
+
+    .muted { color:var(--muted); font-size:13px; }
+
+    footer { margin-top:18px; color:var(--muted); font-size:13px; text-align:center; }
+
+    /* small screens */
+    @media (max-width:720px){
+        .panel{ flex-direction:column }
+        header { flex-direction:column; align-items:flex-start; gap:10px; }
+    }
+</style>
+</head>
+<body>
+<div class="app">
+    <header>
+        <div class="brand">
+            <div class="logo">AI</div>
+            <div>
+                <h1>My Portfolio</h1>
+                <p class="lead">Interactive Web Technologies — Lab Task 09</p>
+            </div>
+        </div>
+
+        <div class="controls">
+            <div id="greetingView" style="text-align:right">
+                <div class="greeting" id="greetingText">Good Day</div>
+                <div class="clock" id="clockText">--:--:--</div>
+            </div>
+
+            <button class="btn secondary" id="themeToggle">Switch to Dark Mode</button>
+        </div>
+    </header>
+
+    <nav id="nav">
+        <a data-target="about" class="active">About</a>
+        <a data-target="projects">Projects</a>
+        <a data-target="contact">Contact</a>
+    </nav>
+
+    <div class="panel">
+        <div class="left">
+            <div class="card">
+                <h3>Quick Info</h3>
+                <p class="muted" id="quickInfo">Frontend developer • Open to internships</p>
+
+                <hr style="margin:12px 0; border:none; height:1px; background:rgba(0,0,0,0.04)">
+
+                <h4 style="margin:6px 0">Theme Controls</h4>
+                <p class="muted">Click to toggle and the theme will persist on refresh.</p>
+                <div style="margin-top:8px; display:flex; gap:8px;">
+                    <button class="btn" id="bgColorBtn">Change Accent Color</button>
+                    <button class="btn" id="resetStylesBtn">Reset Colors</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="right">
+            <!-- About -->
+            <div id="about" class="card section-content">
+                <h2>About Me</h2>
+                <p class="muted">Hello! I'm a web developer building modern interfaces. This portfolio demonstrates DOM manipulation, theme switching, live updates, and client-side form validation — exactly what recruiters like to see.</p>
+                <section>
+                    <h3>What I Do</h3>
+                    <p class="muted">HTML, CSS, JavaScript, small interactive projects, UI design basics.</p>
+                </section>
+            </div>
+
+            <!-- Projects -->
+            <div id="projects" class="card section-content" style="display:none;">
+                <h2>Projects</h2>
+                <div class="projects" id="projectsGrid">
+                    <!-- JS will populate a few project cards -->
+                </div>
+            </div>
+
+            <!-- Contact -->
+            <div id="contact" class="card section-content" style="display:none;">
+                <h2>Contact Me</h2>
+                <p class="muted">Fill the form and I will respond soon.</p>
+
+                <form id="contactForm" novalidate>
+                    <div class="row">
+                        <div style="flex:1 1 200px">
+                            <label>Name</label>
+                            <input type="text" id="nameField" />
+                            <div class="field-error" id="nameError">Name is required</div>
+                        </div>
+                        <div style="flex:1 1 200px">
+                            <label>Email</label>
+                            <input type="email" id="emailField" />
+                            <div class="field-error" id="emailError">Enter a valid email</div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label>Message</label>
+                        <textarea id="messageField"></textarea>
+                        <div class="field-error" id="messageError">Message must be at least 10 characters</div>
+                    </div>
+
+                    <div style="margin-top:10px; display:flex; gap:10px;">
+                        <button class="btn" type="button" id="sendBtn">Send Message</button>
+                        <button class="btn secondary" type="button" id="clearBtn">Clear</button>
+                        <div id="formStatus" class="muted" style="align-self:center"></div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <footer>© 2025 — Interactive Portfolio • Lab Task 09 (AIUB)</footer>
+</div>
+
+<script>
+/* -------------------------
+   Utility & Initial Setup
+   ------------------------- */
+const themeToggle = document.getElementById('themeToggle');
+const body = document.body;
+const clockText = document.getElementById('clockText');
+const greetingText = document.getElementById('greetingText');
+const nav = document.getElementById('nav');
+const navLinks = nav.querySelectorAll('a');
+
+/* Load saved theme */
+const savedTheme = localStorage.getItem('theme');
+if (savedTheme === 'dark') body.classList.add('dark');
+updateThemeButton();
+
+/* Update theme button text according to current theme */
+function updateThemeButton(){
+    const isDark = body.classList.contains('dark');
+    themeToggle.textContent = isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode';
+}
+
+/* Toggle theme on click and persist */
+themeToggle.addEventListener('click', () => {
+    body.classList.toggle('dark');
+    localStorage.setItem('theme', body.classList.contains('dark') ? 'dark' : 'light');
+    updateThemeButton();
+});
+
+/* -------------------------
+   Live Clock & Greeting
+   ------------------------- */
+function pad(n){ return n < 10 ? '0'+n : n; }
+function updateClockAndGreeting(){
+    const now = new Date();
+    const hrs = now.getHours();
+    const mins = now.getMinutes();
+    const secs = now.getSeconds();
+    // clock display in 12-hour format
+    let hour12 = hrs % 12 || 12;
+    const ampm = hrs >= 12 ? 'PM' : 'AM';
+    clockText.textContent = `${pad(hour12)}:${pad(mins)}:${pad(secs)} ${ampm}`;
+
+    // Greeting based on hour (local time)
+    let greeting = 'Hello';
+    if (hrs >= 5 && hrs < 12) greeting = 'Good Morning';
+    else if (hrs >= 12 && hrs < 17) greeting = 'Good Afternoon';
+    else greeting = 'Good Evening';
+    greetingText.textContent = `${greeting}, welcome!`;
+}
+/* start immediately & update every second */
+updateClockAndGreeting();
+setInterval(updateClockAndGreeting, 1000);
+
+/* -------------------------
+   Section Toggling (nav)
+   ------------------------- */
+function showSection(id){
+    const sections = ['about','projects','contact'];
+    sections.forEach(s => {
+        const el = document.getElementById(s);
+        if (!el) return;
+        el.style.display = (s === id) ? 'block' : 'none';
+    });
+    // update nav active state
+    navLinks.forEach(link => link.classList.toggle('active', link.dataset.target === id));
+}
+
+/* attach events to nav */
+navLinks.forEach(link => {
+    link.addEventListener('click', () => {
+        const target = link.dataset.target;
+        showSection(target);
+    });
+});
+
+/* -------------------------
+   Populate Projects (DOM Styling)
+   ------------------------- */
+const projects = [
+    {title:'Interactive Clock', desc:'Real-time clock with AM/PM and theming.'},
+    {title:'Text Analyzer', desc:'Word & char counts, reversed text.'},
+    {title:'Student Table', desc:'Add/remove student records dynamically.'},
+    {title:'Portfolio UI', desc:'This interactive portfolio demo.'}
+];
+const projectsGrid = document.getElementById('projectsGrid');
+projects.forEach(p => {
+    const card = document.createElement('div');
+    card.className = 'project';
+    card.innerHTML = `<h3>${p.title}</h3><p>${p.desc}</p>`;
+    projectsGrid.appendChild(card);
+});
+
+/* -------------------------
+   Accent Color & DOM Styling
+   ------------------------- */
+const bgColorBtn = document.getElementById('bgColorBtn');
+const resetStylesBtn = document.getElementById('resetStylesBtn');
+const quickInfo = document.getElementById('quickInfo');
+
+bgColorBtn.addEventListener('click', () => {
+    // change CSS custom properties dynamically
+    const hues = [
+        {p:'--primary', a:'#ef4444', b:'#f97316'},
+        {p:'--primary', a:'#2563eb', b:'#06b6d4'},
+        {p:'--primary', a:'#7c3aed', b:'#06b6d4'},
+        {p:'--primary', a:'#059669', b:'#10b981'}
+    ];
+    const pick = hues[Math.floor(Math.random()*hues.length)];
+    document.documentElement.style.setProperty('--primary', pick.a);
+    document.documentElement.style.setProperty('--accent', pick.b);
+
+    // update quick info text to reflect change
+    quickInfo.textContent = 'Accent updated — try navigation and theme toggle.';
+});
+
+resetStylesBtn.addEventListener('click', () => {
+    // restore default variables
+    document.documentElement.style.removeProperty('--primary');
+    document.documentElement.style.removeProperty('--accent');
+    quickInfo.textContent = 'Frontend developer • Open to internships';
+});
+
+/* -------------------------
+   Contact Form Validation
+   ------------------------- */
+const nameField = document.getElementById('nameField');
+const emailField = document.getElementById('emailField');
+const messageField = document.getElementById('messageField');
+const nameError = document.getElementById('nameError');
+const emailError = document.getElementById('emailError');
+const messageError = document.getElementById('messageError');
+const sendBtn = document.getElementById('sendBtn');
+const clearBtn = document.getElementById('clearBtn');
+const formStatus = document.getElementById('formStatus');
+
+function validateEmail(email){
+    // simple email regex good for client-side validation
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function validateContactForm(){
+    let ok = true;
+    // reset error states
+    [nameError,emailError,messageError].forEach(el => { el.style.display='none'; el.textContent=''; });
+    formStatus.textContent = '';
+
+    const name = nameField.value.trim();
+    const email = emailField.value.trim();
+    const message = messageField.value.trim();
+
+    if (!name){
+        nameError.textContent = 'Name is required';
+        nameError.style.display = 'block';
+        ok = false;
+    }
+    if (!validateEmail(email)){
+        emailError.textContent = 'Please enter a valid email';
+        emailError.style.display = 'block';
+        ok = false;
+    }
+    if (message.length < 10){
+        messageError.textContent = 'Message must be at least 10 characters';
+        messageError.style.display = 'block';
+        ok = false;
+    }
+    return ok;
+}
+
+sendBtn.addEventListener('click', () => {
+    if (validateContactForm()){
+        // simulated send - in real app you'd call an API
+        formStatus.textContent = 'Message sent — thank you!';
+        formStatus.style.color = 'var(--accent)';
+        // clear form after sending
+        nameField.value = emailField.value = messageField.value = '';
+        setTimeout(()=> formStatus.textContent = '', 4000);
+    } else {
+        formStatus.textContent = 'Please fix the errors above.';
+        formStatus.style.color = 'var(--danger)';
+    }
+});
+
+clearBtn.addEventListener('click', () => {
+    nameField.value = emailField.value = messageField.value = '';
+    [nameError,emailError,messageError].forEach(el => el.style.display='none');
+    formStatus.textContent = '';
+});
+
+/* -------------------------
+   Initial view
+   ------------------------- */
+showSection('about');
+</script>
+</body>
+</html>

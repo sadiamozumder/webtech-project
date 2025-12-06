@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Style Manipulation</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f2f5;
+            padding: 40px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            width: 500px;
+            text-align: center;
+        }
+
+        #textBlock {
+            font-size: 18px;
+            background: #fafafa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            transition: 0.3s;
+        }
+
+        button {
+            padding: 10px 18px;
+            margin: 5px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .reset-btn {
+            background-color: #dc3545;
+        }
+        .reset-btn:hover {
+            background-color: #b02a37;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h2>Dynamic Style Control Panel</h2>
+
+        <p id="textBlock">
+            This is a sample paragraph. Click the buttons below to change my style!
+        </p>
+
+        <button onclick="changeBackground()">Change Background Color</button>
+        <button onclick="increaseFont()">Increase Font Size</button>
+        <button onclick="centerText()">Center Text</button>
+        <button class="reset-btn" onclick="resetStyles()">Reset Style</button>
+    </div>
+
+
+    <script>
+        const text = document.getElementById("textBlock");
+        let currentFontSize = 18; 
+
+        
+        function changeBackground() {
+            const colors = ["#ffe6e6", "#e6ffe6", "#e6f0ff", "#fff3cd", "#f8d7da"];
+            const randomColor = colors[Math.floor(Math.random() * colors.length)];
+            text.style.backgroundColor = randomColor;
+        }
+
+        
+        function increaseFont() {
+            currentFontSize += 2;
+            text.style.fontSize = currentFontSize + "px";
+        }
+
+        
+        function centerText() {
+            text.style.textAlign = "center";
+        }
+
+        
+        function resetStyles() {
+            text.style.backgroundColor = "#fafafa";
+            text.style.fontSize = "18px";
+            text.style.textAlign = "left";
+            currentFontSize = 18;
+        }
+    </script>
+
+</body>
+</html>
