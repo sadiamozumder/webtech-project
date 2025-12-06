@@ -1,0 +1,101 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Clock Widget</title>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            background-color: #f0f4f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .clock-container {
+            background-color: #ffffff;
+            padding: 40px 60px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            text-align: center;
+        }
+
+        h1 {
+            color: #34495e;
+            margin-bottom: 20px;
+        }
+
+        #clock {
+            font-size: 4rem;
+            font-weight: bold;
+            color: #2c3e50;
+            letter-spacing: 3px;
+            padding: 10px 0;
+            transition: color 0.5s;
+        }
+
+        .ampm {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #3498db; 
+            margin-left: 10px;
+        }
+
+       
+        @media (max-width: 600px) {
+            #clock {
+                font-size: 3rem;
+            }
+            .ampm {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="clock-container">
+        <h1>Digital Clock</h1>
+        <div id="clock"></div>
+    </div>
+
+    <script>
+        const clockDisplay = document.getElementById('clock');
+
+       
+        function padZero(num) {
+            return num < 10 ? '0' + num : num;
+        }
+
+       
+        function updateClock() {
+            const now = new Date();
+            let hours = now.getHours();
+            const minutes = now.getMinutes();
+            const seconds = now.getSeconds();
+
+            
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12; 
+            hours = hours ? hours : 12; 
+
+            // Format the time string
+            const timeString = 
+                padZero(hours) + ':' + 
+                padZero(minutes) + ':' + 
+                padZero(seconds);
+
+            
+            clockDisplay.innerHTML = `
+                ${timeString} 
+                <span class="ampm">${ampm}</span>
+            `;
+        }
+        updateClock(); 
+        setInterval(updateClock, 1000);
+    </script>
+</body>

@@ -1,0 +1,257 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Management Table</title>
+    <style>
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            background-color: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #343a40;
+            margin-bottom: 30px;
+        }
+
+        .input-form {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            align-items: end;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-group label {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #495057;
+        }
+
+        .input-form input {
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            transition: border-color 0.3s;
+        }
+
+        .input-form input:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+        #addStudentBtn {
+            padding: 10px 15px;
+            background-color: #28a745; 
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s, transform 0.1s;
+        }
+
+        #addStudentBtn:hover {
+            background-color: #218838;
+        }
+
+        #addStudentBtn:active {
+            transform: scale(0.98);
+        }
+
+       
+        .student-table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #ffffff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .student-table th, .student-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .student-table th {
+            background-color: #007bff;
+            color: white;
+            font-weight: 700;
+        }
+
+        .student-table tbody tr:hover {
+            background-color: #e9ecef;
+        }
+
+        .delete-btn {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .delete-btn:hover {
+            background-color: #c82333;
+        }
+
+        
+        #messageBox {
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+            display: none; 
+        }
+
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Student Management System</h2>
+
+        
+        <div class="input-form">
+            <div class="input-group">
+                <label for="studentName">Name</label>
+                <input type="text" id="studentName">
+            </div>
+            <div class="input-group">
+                <label for="studentRoll">Roll</label>
+                <input type="text" id="studentRoll">
+            </div>
+            <div class="input-group">
+                <label for="studentDept">Department</label>
+                <input type="text" id="studentDept">
+            </div>
+            <div class="input-group">
+                <button id="addStudentBtn">Add Student</button>
+            </div>
+        </div>
+        
+        
+        <div id="messageBox"></div>
+
+        
+        <table class="student-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Roll</th>
+                    <th>Department</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="studentTableBody">
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        const nameInput = document.getElementById('studentName');
+        const rollInput = document.getElementById('studentRoll');
+        const deptInput = document.getElementById('studentDept');
+        const addButton = document.getElementById('addStudentBtn');
+        const tableBody = document.getElementById('studentTableBody');
+        const messageBox = document.getElementById('messageBox');
+        function displayMessage(message, type) {
+            messageBox.textContent = message;
+            messageBox.className = ''; 
+            messageBox.classList.add('error'); 
+            messageBox.style.display = 'block';
+
+            setTimeout(() => {
+                messageBox.style.display = 'none';
+                messageBox.textContent = '';
+            }, 3000); 
+        }
+
+       
+        function clearInputs() {
+            nameInput.value = '';
+            rollInput.value = '';
+            deptInput.value = '';
+        }
+
+        
+        function addStudent() {
+            const name = nameInput.value.trim();
+            const roll = rollInput.value.trim();
+            const dept = deptInput.value.trim();
+
+            
+            if (name === '' || roll === '' || dept === '') {
+                displayMessage('All fields (Name, Roll, Department) must be filled out.', 'error');
+                return;
+            }
+
+        
+            const newRow = document.createElement('tr');
+            const nameCell = document.createElement('td');
+            nameCell.textContent = name;
+            newRow.appendChild(nameCell);
+
+            const rollCell = document.createElement('td');
+            rollCell.textContent = roll;
+            newRow.appendChild(rollCell);
+
+            const deptCell = document.createElement('td');
+            deptCell.textContent = dept;
+            newRow.appendChild(deptCell);
+
+            
+            const actionCell = document.createElement('td');
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = 'Delete';
+            deleteButton.classList.add('delete-btn');
+            
+  
+            deleteButton.addEventListener('click', function() {
+        
+                this.closest('tr').remove();
+            });
+
+            actionCell.appendChild(deleteButton);
+            newRow.appendChild(actionCell);
+            tableBody.appendChild(newRow);
+
+            clearInputs();
+        }
+
+        addButton.addEventListener('click', addStudent);
+    </script>
+</body>

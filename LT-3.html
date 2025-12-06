@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dark & Light Mode Toggle - AIUB Lab Task 03</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            transition: 0.3s;
+        }
+
+        header, footer {
+            padding: 20px;
+            text-align: center;
+            font-size: 22px;
+            transition: 0.3s;
+        }
+
+        .content {
+            padding: 40px;
+            text-align: center;
+            font-size: 18px;
+            transition: 0.3s;
+        }
+
+        button {
+            padding: 10px 20px;
+            cursor: pointer;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 18px;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        /* Default = Light Mode */
+        body.light {
+            background: #ffffff;
+            color: #000000;
+        }
+        header.light, footer.light {
+            background: #e9e9e9;
+        }
+
+        /* Dark Mode */
+        body.dark {
+            background: #121212;
+            color: #ffffff;
+        }
+        header.dark, footer.dark {
+            background: #1f1f1f;
+        }
+    </style>
+</head>
+<body class="light" id="page">
+
+    <header id="header">My Portfolio Website</header>
+
+    <div class="content" id="content">
+        <p>Welcome to my portfolio! Click the button below to change the theme.</p>
+        <button id="toggleBtn" onclick="toggleTheme()">Switch to Dark Mode</button>
+    </div>
+
+    <footer id="footer">© 2025 My Portfolio. All Rights Reserved.</footer>
+
+    <script>
+        let isDarkMode = false; // Stores current mode
+
+        function toggleTheme() {
+            const body = document.getElementById("page");
+            const header = document.getElementById("header");
+            const footer = document.getElementById("footer");
+            const button = document.getElementById("toggleBtn");
+
+            if (isDarkMode === false) {
+                // Switch to Dark
+                body.classList.remove("light");
+                header.classList.remove("light");
+                footer.classList.remove("light");
+
+                body.classList.add("dark");
+                header.classList.add("dark");
+                footer.classList.add("dark");
+
+                button.textContent = "Switch to Light Mode";
+                isDarkMode = true;
+
+            } else {
+                // Switch to Light
+                body.classList.remove("dark");
+                header.classList.remove("dark");
+                footer.classList.remove("dark");
+
+                body.classList.add("light");
+                header.classList.add("light");
+                footer.classList.add("light");
+
+                button.textContent = "Switch to Dark Mode";
+                isDarkMode = false;
+            }
+        }
+    </script>
+
+</body>
+</html>
